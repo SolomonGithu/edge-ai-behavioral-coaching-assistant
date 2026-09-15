@@ -1,0 +1,10 @@
+name: Edge AI Behavioral Coaching Assistant
+description: An AI-powered behavioral coach that observes your daily activities, learns patterns and provides personalized insights.
+ports: []
+bricks:
+- arduino:web_ui: {}
+- arduino:llm:
+    model: llamacpp:Qwen3.5-0.8B-Q4_0
+- arduino:video_object_detection:
+    model: ei-model-1105603-1
+icon: 🤖
