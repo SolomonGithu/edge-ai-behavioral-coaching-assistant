@@ -1,4 +1,4 @@
-# Edge AI Behavioral Coaching Assistant
+# Running Small Edge AI Coaches - Cascaded Computer Vision and Small Language Models
 
 ![Detect objects and describe them](assets/docs_assets/cover-image.png)
 
