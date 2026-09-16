@@ -27,8 +27,6 @@ detection_stream = VideoObjectDetection(
 
 llm = LargeLanguageModel()
 
-
-# Log detected objects
 behavior_history = []
 last_coaching_time = time.monotonic()
 last_event_time = {}
@@ -93,29 +91,19 @@ def format_llm_response(raw_text):
         return ""
 
     text = str(raw_text).strip()
-
-    # Remove markdown formatting
-    text = re.sub(r"[*_`#]", "", text)
-
-    # Normalize line endings
-    text = text.replace("\r\n", "\n")
-
-    # Remove duplicated blank lines
-    text = re.sub(r"\n{2,}", "\n", text)
-
+    text = re.sub(r"[*_`#]", "", text) # Remove markdown formatting
+    text = text.replace("\r\n", "\n") # Normalize line endings
+    text = re.sub(r"\n{2,}", "\n", text) # Remove duplicated blank lines
     lines = [
         line.strip()
         for line in text.split("\n")
         if line.strip()
     ]
-
     analysis = None
     recommendation = None
 
     for line in lines:
-
         lower = line.lower()
-
         if lower.startswith("analysis:"):
             analysis = line[len("analysis:"):].strip()
 
@@ -129,14 +117,12 @@ def format_llm_response(raw_text):
             f"Recommendation: {recommendation}"
         )
 
-    # Fallback: try to extract old formats
+    # Try to extract old formats
     pattern = None
     coaching = None
 
     for line in lines:
-
         lower = line.lower()
-
         if lower.startswith("pattern:"):
             pattern = line[len("pattern:"):].strip()
 
@@ -164,7 +150,6 @@ def run_coaching_sync(events, duration_seconds):
     is_llm_running = True
 
     try:
-
         print()
         print("[LLM process] ====== STARTING AI BEHAVIORAL COACH ======")
 
@@ -173,14 +158,10 @@ def run_coaching_sync(events, duration_seconds):
         print()
         print("[LLM process] Aggregated observations:")
         print(aggregated_summary)
-
         prompt = create_coaching_prompt(aggregated_summary)
-
         print()
         response = llm.chat(prompt)
-
         clean_response = format_llm_response(response)
-
         print("[LLM process] AI Coach response:")
         print(clean_response)
 
@@ -233,7 +214,6 @@ def on_detection(detections):
             }
         )
 
-
         # Debounce object detections
         previous_time = last_event_time.get(key)
         if (
@@ -253,9 +233,7 @@ def on_detection(detections):
 
         print(f"[Debug] Detected object recorded {timestamp} | {key}")
 
-
-    # Check LLM prompting timer
-    elapsed_seconds = (current_time - last_coaching_time)
+    elapsed_seconds = (current_time - last_coaching_time) # Check LLM prompting timer
 
     if elapsed_seconds < AI_COACHING_INTERVAL_SECONDS:
         return
@@ -263,7 +241,6 @@ def on_detection(detections):
     # Prompt LLM if observations exist
     if behavior_history:
         events_to_analyze = list(behavior_history)
-
         run_coaching_sync(events_to_analyze,elapsed_seconds)
 
     else:
